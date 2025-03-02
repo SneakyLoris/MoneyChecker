@@ -4,6 +4,8 @@
 
 ## Запуск проекта для дальнейшей разработки
 
-- 'python3 -n venv venv' - создание виртуального окружения
-- 'sorce venv/bin/activate' - вход в виртуальное окружение
-- 'pip install -r requirements.txt' - установка зависимостей
+- 'python3 -n venv venv' - создание виртуального окружения;
+- 'sorce venv/bin/activate' - вход в виртуальное окружение;
+- 'pip install -r requirements.txt' - установка зависимостей;
+- 'python3 manage.py runserver' - запуск сервера для разработки.
+
