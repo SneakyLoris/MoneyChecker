@@ -7,4 +7,3 @@
 - 'python3 -n venv venv' - создание виртуального окружения
 - 'sorce venv/bin/activate' - вход в виртуальное окружение
 - 'pip install -r requirements.txt' - установка зависимостей
-- 
