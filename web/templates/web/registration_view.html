@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+</head>
+<body>
+<h1>Регистрация</h1>
+{% if is_success %}
+    <p>Успешная регистрация</p>
+{% else %}
+    <form action="" method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button>Зарегистрироваться</button>
+    </form>
+{% endif %}
+</body>
+</html>
