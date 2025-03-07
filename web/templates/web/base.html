@@ -9,10 +9,15 @@
     <nav>
       <a href="{% url 'main' %}">Главная страница</a>
       {% if user.is_anonymous %}
-        <a href="{% url 'registration' %}">Регистрация</a>
-        <a href="{% url 'auth' %}">Авторизация</a>
+        <div style="text-align: right">
+            <a href="{% url 'registration' %}">Регистрация</a>
+            <a href="{% url 'auth' %}">Авторизация</a>
+        </div>
       {% else %}
-        <a href="{% url 'logout' %}">Выход</a>
+        <div style="text-align: right">
+            <b>Пользователь: {{ user.username }}</b>
+            <a href="{% url 'logout' %}">Выход</a>
+        </div>
       {% endif %}
     </nav>
     {% block content %} {% endblock %}

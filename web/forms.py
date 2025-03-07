@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+from web.models import Purchase
+
 User = get_user_model()
 
 
@@ -22,3 +24,16 @@ class RegistrationForm(forms.ModelForm):
 class AuthForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
+
+
+class MoneySpendForm(forms.ModelForm):
+    date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"))
+
+    def save(self, commit=True):
+        self.instance.user = self.initial["user"]
+        self.instance.is_planed = self.initial["is_planed"]
+        return super().save(commit)
+
+    class Meta:
+        model = Purchase
+        fields = ("title", "value", "date")
