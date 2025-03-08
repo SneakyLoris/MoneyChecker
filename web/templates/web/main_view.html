@@ -1,6 +1,18 @@
 {% extends 'web/base.html' %}
 {% block content %}
     {% if not user.is_anonymous %}
-        <p>Вы авторизованы как пользователь с логином <b>{{ user.username }}</b></p>
-    {% endif %}
+
+        <a href="{% url 'add_spend_money' %}">Создать новую трату</a>
+        <a href="{% url 'categories' %}">Категории трат</a>
+<ul>
+    {% for spend in spends%}
+        <li>
+            <b>{{ spend.title }}</b>
+             - {{spend.value}} {{spend.date}}
+            <a href="{% url 'edit_spend_money' spend.id %}">Изменить</a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endif %}
 {% endblock %}

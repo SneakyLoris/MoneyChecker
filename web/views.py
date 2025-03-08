@@ -1,12 +1,19 @@
+from datetime import datetime
+
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.shortcuts import render, redirect
 
-from web.forms import RegistrationForm, AuthForm
+from web.forms import RegistrationForm, AuthForm, MoneySpendForm, PurchaseCategoryForm
+from web.models import Purchase, PurchaseCategory
 
 User = get_user_model()
 
+
 def main_view(request):
-    return render(request, 'web\main_view.html')
+    spends = Purchase.objects.all()
+    return render(request, 'web/main_view.html', {
+        'spends' : spends
+    })
 
 
 def registration_view(request):
@@ -24,10 +31,9 @@ def registration_view(request):
 
             print(form.cleaned_data)
 
-
-    return render(request, r'web\registration_view.html', {
-        "form" : form,
-        "is_success" : is_success
+    return render(request, 'web/registration_view.html', {
+        "form": form,
+        "is_success": is_success
     })
 
 
@@ -44,11 +50,54 @@ def auth_view(request):
                 login(request, user)
                 return redirect("main")
 
-    return render(request, r'web\auth_view.html', {
-        'form' : form
+    return render(request, 'web/auth_view.html', {
+        'form': form
     })
 
 
 def logout_view(request):
     logout(request)
     return redirect("main")
+
+
+def edit_money_spend_view(request, id=None):
+    spend = Purchase.objects.get(id=id) if id is not None else None
+    form = MoneySpendForm(instance=spend)
+
+    if request.method == 'POST':
+        date = [int(i) for i in request.POST["date"].split('T')[0].split('-')]
+        is_planed = True
+        if date[1] <= datetime.now().month and date[-1] <= datetime.now().day:
+            is_planed = False
+
+        form = MoneySpendForm(data=request.POST, instance=spend, initial={"user": request.user, 'is_planed': is_planed})
+
+        if form.is_valid():
+            form.save()
+            return redirect("main")
+
+    return render(request, 'web/add_spend_money_view.html', {
+        "form": form
+    })
+
+
+def purchase_category_view(request):
+    categories = PurchaseCategory.objects.all()
+    form = PurchaseCategoryForm()
+    if request.method == "POST":
+        form = PurchaseCategoryForm(data=request.POST, initial={"user": request.user})
+
+        if form.is_valid():
+            form.save()
+            return redirect('categories')
+
+    return render(request, 'web/categories.html', {
+        'form': form,
+        'tags': categories,
+    })
+
+
+def delete_purchase_category_view(request, id=None):
+    category = PurchaseCategory.objects.get(id=id)
+    category.delete()
+    return redirect('categories')
