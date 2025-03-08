@@ -34,8 +34,8 @@ class MoneySpendForm(forms.ModelForm):
 
     class Meta:
         model = Purchase
-        fields = ("title", "value", "date")
-        widget = {
+        fields = ("title", "value", "date", "tags")
+        widgets = {
             "date": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M")
         }
 
