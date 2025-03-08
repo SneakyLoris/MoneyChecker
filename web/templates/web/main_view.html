@@ -2,7 +2,8 @@
 {% block content %}
     {% if not user.is_anonymous %}
 
-        <p><a href="{% url 'add_spend_money' %}">Создать новую трату</a></p>
+        <a href="{% url 'add_spend_money' %}">Создать новую трату</a>
+        <a href="{% url 'categories' %}">Категории трат</a>
 <ul>
     {% for spend in spends%}
         <li>

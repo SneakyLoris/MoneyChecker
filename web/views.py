@@ -3,15 +3,15 @@ from datetime import datetime
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.shortcuts import render, redirect
 
-from web.forms import RegistrationForm, AuthForm, MoneySpendForm
-from web.models import Purchase
+from web.forms import RegistrationForm, AuthForm, MoneySpendForm, PurchaseCategoryForm
+from web.models import Purchase, PurchaseCategory
 
 User = get_user_model()
 
 
 def main_view(request):
     spends = Purchase.objects.all()
-    return render(request, 'web\main_view.html', {
+    return render(request, 'web/main_view.html', {
         'spends' : spends
     })
 
@@ -31,7 +31,7 @@ def registration_view(request):
 
             print(form.cleaned_data)
 
-    return render(request, r'web\registration_view.html', {
+    return render(request, 'web/registration_view.html', {
         "form": form,
         "is_success": is_success
     })
@@ -50,7 +50,7 @@ def auth_view(request):
                 login(request, user)
                 return redirect("main")
 
-    return render(request, r'web\auth_view.html', {
+    return render(request, 'web/auth_view.html', {
         'form': form
     })
 
@@ -76,6 +76,28 @@ def edit_money_spend_view(request, id=None):
             form.save()
             return redirect("main")
 
-    return render(request, r'web\add_spend_money_view.html', {
+    return render(request, 'web/add_spend_money_view.html', {
         "form": form
     })
+
+
+def purchase_category_view(request):
+    categories = PurchaseCategory.objects.all()
+    form = PurchaseCategoryForm()
+    if request.method == "POST":
+        form = PurchaseCategoryForm(data=request.POST, initial={"user": request.user})
+
+        if form.is_valid():
+            form.save()
+            return redirect('categories')
+
+    return render(request, 'web/categories.html', {
+        'form': form,
+        'tags': categories,
+    })
+
+
+def delete_purchase_category_view(request, id=None):
+    category = PurchaseCategory.objects.get(id=id)
+    category.delete()
+    return redirect('categories')

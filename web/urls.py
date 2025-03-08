@@ -10,4 +10,6 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('money_spend/add/', edit_money_spend_view, name='add_spend_money'),
     path('money_spend/<int:id>/', edit_money_spend_view, name='edit_spend_money'),
+    path('categories/', purchase_category_view, name='categories'),
+    path('categories/<int:id>/delete', delete_purchase_category_view, name='delete_purchase_category'),
 ]
