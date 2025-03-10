@@ -1,3 +1,5 @@
+from importlib.metadata import requires
+
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -49,3 +51,7 @@ class PurchaseCategoryForm(forms.ModelForm):
     class Meta:
         model = PurchaseCategory
         fields = ("title",)
+
+
+class FilterForm(forms.Form):
+    search = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Поиск"}), required=False)

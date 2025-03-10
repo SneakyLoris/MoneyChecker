@@ -1,9 +1,21 @@
 {% extends 'web/base.html' %}
 {% block content %}
     {% if not user.is_anonymous %}
-
         <a href="{% url 'add_spend_money' %}">Создать новую трату</a>
         <a href="{% url 'categories' %}">Категории трат</a>
+<hr>
+
+<form action="" method="get">
+    <b>Фильтрация трат</b><br>
+    {% csrf_token %}
+    {% for field in filter_form %}
+        {{ field }}
+    {% endfor %}
+    <button>Поиск</button>
+</form>
+
+<hr>
+
 <ul>
     {% for spend in spends%}
         <li>
@@ -13,6 +25,22 @@
         </li>
     {% endfor %}
 </ul>
+<p>{{ spends_count }} записей найдено</p>
+<nav>
+    {% if spends.has_previous %}
+        <a href="?page=1">В начало</a>
+        <a href="?page={{ spends.previous_page_number }}"><<<</a>
+    {% endif %}
+
+    <b>{{ spends.number }} из {{ spends.paginator.num_pages }}</b>
+
+    {% if spends.has_next %}
+        <a href="?page={{ spends.next_page_number }}"> >>> </a>
+        <a href="?page={{ spends.end_index }}">В конец</a>
+    {% endif %}
+</nav>
+
+<hr>
 
 {% endif %}
 {% endblock %}
