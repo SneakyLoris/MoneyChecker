@@ -4,6 +4,8 @@ from django.contrib.admin.templatetags.admin_list import pagination
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count, Max, Min, Sum
+from django.db.models.functions import TruncDate
 from django.shortcuts import render, redirect
 
 from web.forms import RegistrationForm, AuthForm, MoneySpendForm, PurchaseCategoryForm, FilterForm
@@ -16,7 +18,6 @@ User = get_user_model()
 def main_view(request):
     spends = Purchase.objects.all()
 
-
     filter_form = FilterForm(request.GET)
     filter_form.is_valid()
     filters = filter_form.cleaned_data
@@ -25,7 +26,7 @@ def main_view(request):
     if filters["search"]:
         spends = spends.filter(title__icontains=filters["search"])
 
-
+    spends = spends.prefetch_related("tags")
     page = request.GET.get("page", 1)
     paginator = Paginator(spends, 15)
 
@@ -125,3 +126,22 @@ def delete_purchase_category_view(request, id=None):
     category = PurchaseCategory.objects.get(id=id)
     category.delete()
     return redirect('categories')
+
+
+def analytic_view(request):
+    overall_stats = Purchase.objects.aggregate(
+        Count("id"),
+        Max("date"),
+        Min("date"),
+        Sum("value"),
+    )
+    days_stat = (Purchase.objects.all()
+        .annotate(only_date=TruncDate("date"))
+        .values("only_date")
+        .annotate(count=Count("id"), sm=Sum("value"))
+    ).order_by('-only_date')
+
+    return render(request, 'web/analytics.html', {
+        "overall_stats": overall_stats,
+        "days_stat": days_stat,
+    })
