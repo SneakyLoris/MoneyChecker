@@ -11,6 +11,7 @@ urlpatterns = [
     path('analytics/', analytic_view, name='analytics'),
     path('money_spend/add/', edit_money_spend_view, name='add_spend_money'),
     path('money_spend/<int:id>/', edit_money_spend_view, name='edit_spend_money'),
+    path('money_spend/<int:id>/delete', delete_money_spend_view, name='delete_spend_money'),
     path('categories/', purchase_category_view, name='categories'),
     path('categories/<int:id>/delete', delete_purchase_category_view, name='delete_purchase_category'),
 ]

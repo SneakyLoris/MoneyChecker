@@ -14,14 +14,12 @@ from web.models import Purchase, PurchaseCategory
 User = get_user_model()
 
 
-@login_required
 def main_view(request):
     spends = Purchase.objects.all()
 
     filter_form = FilterForm(request.GET)
     filter_form.is_valid()
     filters = filter_form.cleaned_data
-
 
     if filters["search"]:
         spends = spends.filter(title__icontains=filters["search"])
@@ -33,9 +31,9 @@ def main_view(request):
     spends_count = len(spends)
 
     return render(request, 'web/main_view.html', {
-        'spends' : paginator.get_page(page),
-        "filter_form" : filter_form,
-        "spends_count" : spends_count,
+        'spends': paginator.get_page(page),
+        "filter_form": filter_form,
+        "spends_count": spends_count,
     })
 
 
@@ -106,6 +104,12 @@ def edit_money_spend_view(request, id=None):
 
 
 @login_required
+def delete_money_spend_view(request, id):
+    Purchase.objects.get(id=id).delete()
+    return redirect("main")
+
+
+@login_required
 def purchase_category_view(request):
     categories = PurchaseCategory.objects.all()
     form = PurchaseCategoryForm()
@@ -128,6 +132,7 @@ def delete_purchase_category_view(request, id=None):
     return redirect('categories')
 
 
+@login_required
 def analytic_view(request):
     overall_stats = Purchase.objects.aggregate(
         Count("id"),
@@ -136,10 +141,10 @@ def analytic_view(request):
         Sum("value"),
     )
     days_stat = (Purchase.objects.all()
-        .annotate(only_date=TruncDate("date"))
-        .values("only_date")
-        .annotate(count=Count("id"), sm=Sum("value"))
-    ).order_by('-only_date')
+                 .annotate(only_date=TruncDate("date"))
+                 .values("only_date")
+                 .annotate(count=Count("id"), sm=Sum("value"))
+                 ).order_by('-only_date')
 
     return render(request, 'web/analytics.html', {
         "overall_stats": overall_stats,

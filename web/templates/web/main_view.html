@@ -22,7 +22,8 @@
         <li>
             <b>{{ spend.title }}</b>
              - {{spend.value}} {{spend.date}}
-            <a href="{% url 'edit_spend_money' spend.id %}">Изменить</a>
+            <a href="{% url 'edit_spend_money' spend.id %}">Изменить</a> \
+            <a href="{% url 'delete_spend_money' spend.id %}">Удалить</a>
         </li>
     {% endfor %}
 </ul>
