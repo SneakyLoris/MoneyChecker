@@ -1,0 +1,14 @@
+{% extends 'web/base.html' %}
+{% block content %}
+<h2>Аналитика</h2>
+
+<p>Всего {{overall_stats.id__count}} записей.</p>
+<p>Дата последней записи: {{overall_stats.date__max}}.</p>
+<p>Дата первой записи: {{overall_stats.date__min}}.</p>
+<p>Сумма за этот период {{overall_stats.value__sum}} р.</p>
+<hr>
+<b>Статистика по дням</b>
+{% for item in days_stat%}
+<p>{{ item.only_date }} - {{ item.count }} записей; {{ item.sm }} р. портачено.</p>
+{% endfor %}
+{% endblock %}
